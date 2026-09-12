@@ -116,6 +116,8 @@ com.example.rental
 | customer_id   | INT         | PK, AUTO_INCREMENT |      |
 | customer_name | VARCHAR(50) | NOT NULL           |      |
 | phone         | VARCHAR(20) | NOT NULL           |      |
+| created_at    | DATETIME    | NOT NULL           |      |
+| updated_at    | DATETIME    | NOT NULL           |      |
 
 ### reservation(貸出)
 
