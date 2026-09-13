@@ -62,7 +62,7 @@
       - `@WebMvcTest(C1000ListController.class)` + `@MockitoBean CarService`
       - 検証: ステータス200、ビュー名`c1000/c1000list`、Model属性`carList`の存在
 
-- [ ] 10. **messages.properties作成**
+- [x] 10. **messages.properties作成**
       `src/main/resources/messages.properties`
       - `c1000list.title`(車両一覧) / `c1000list.carId` / `c1000list.carName` / `c1000list.numberPlate` / `c1000list.status`
       - 検索・新規登録・編集・削除関連のキーはstep4/5まで作らない
