@@ -52,7 +52,7 @@
       `src/test/java/com/example/rental/service/CarServiceTest.java`
       - Mockitoで`CarMapper`をモック化し、`findAll()`がモックの戻り値をそのまま返すことのみ検証
 
-- [ ] 8. **Controller作成**
+- [x] 8. **Controller作成**
       `src/main/java/com/example/rental/controller/C1000ListController.java`
       - `@Controller`、`@GetMapping("/c1000list")`
       - `CarService`をコンストラクタインジェクション、結果をModel属性(`carList`)に詰めてビュー名`"c1000/c1000list"`を返す
