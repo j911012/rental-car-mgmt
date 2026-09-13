@@ -26,8 +26,9 @@
       - `mybatis.configuration.map-underscore-to-camel-case=true` を追加(スネークケース列↔キャメルケースプロパティの自動マッピングのため)
 
 - [x] 2. **Mapperスキャン設定を追加**(既存ファイル変更)
-      `src/main/java/com/example/rental/RentalCarMgmtApplication.java`
-      - `@MapperScan("com.example.rental.mapper")` を追加
+      `src/main/java/com/example/rental/config/MyBatisConfig.java`(新規)
+      - `@MapperScan("com.example.rental.mapper")` を独立した`@Configuration`クラスに追加
+      - ※メインの`@SpringBootApplication`クラスに直接付けると`@WebMvcTest`等のスライステストでもMapperScannerConfigurerが動きSqlSessionFactory不在で失敗するため、別クラスに切り出した(実装中に判明)
 
 - [x] 3. **Entity作成**
       `src/main/java/com/example/rental/entity/Car.java`
@@ -57,7 +58,7 @@
       - `@Controller`、`@GetMapping("/c1000list")`
       - `CarService`をコンストラクタインジェクション、結果をModel属性(`carList`)に詰めてビュー名`"c1000/c1000list"`を返す
 
-- [ ] 9. **Controllerテスト作成**
+- [x] 9. **Controllerテスト作成**
       `src/test/java/com/example/rental/controller/C1000ListControllerTest.java`
       - `@WebMvcTest(C1000ListController.class)` + `@MockitoBean CarService`
       - 検証: ステータス200、ビュー名`c1000/c1000list`、Model属性`carList`の存在
