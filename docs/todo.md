@@ -80,3 +80,50 @@
 
 - 単体テスト: `CarServiceTest` / `C1000ListControllerTest` を実行しGreenになることを確認
 - 手動確認: アプリ起動後 `/c1000list` にアクセスし、DBの`car`テーブルの内容が一覧表示されることを確認(TODO 12)
+
+---
+
+# TODO: 8章 step3「CarMapperのテスト追加」
+
+`docs/requirements.md` 8章の実装順序のうち、**step3**(CarMapperのテスト追加)のみを対象にしたTODOリスト。
+まだ実装はしていない。1項目ずつ実装し、完了したらチェックを付けていく。
+
+## 対象範囲
+
+- 対象: `CarMapper`(現状`findAll()`のみ、動的SQL・JOINはまだ無い)の`@MybatisTest`
+- 7-1の記載通り**Mapperの動作検証**(DBの内容が`Car`エンティティに正しくマッピングされて返ること)に絞る
+- 対象外(後続stepへ明示的に先送り):
+  - 動的SQLの分岐パターンのテスト → step4(検索条件追加とセット)
+  - 業務ルールの検証(Service層の責務) → 7-2の範囲であり本stepでは扱わない
+
+## 前提・確認済み事項
+
+- `rental_test`スキーマ・`car`テーブルはDBeaverで作成済み
+- テストデータ投入方法: `@Sql(statements = ...)`をテストクラス内に直接記述(別ファイル化はしない)
+- H2は使わない(pom.xmlに依存なし、CLAUDE.mdの方針通りMySQL/`rental_test`のみ)
+
+## TODOリスト
+
+- [ ] 1. **テスト用DB接続設定を追加**(新規ファイル)
+      `src/test/resources/application.properties`
+      - `spring.datasource.url=jdbc:mysql://localhost:3306/rental_test`(username/password/driver-class-nameは本番と同じ値)
+      - `mybatis.mapper-locations=classpath:mapper/*.xml`
+      - `mybatis.configuration.map-underscore-to-camel-case=true`
+      - ※テスト用クラスパスの`application.properties`は本番設定を完全に置き換える(マージされない)ため、必要な設定を漏れなく複製する
+
+- [ ] 2. **CarMapperTest作成**
+      `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+      - `@MybatisTest` + `@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)`(H2等への自動差し替えを無効化し、`rental_test`に接続させる)
+      - `@Autowired CarMapper carMapper`
+      - `@Sql(statements = {...})` で2〜3件のcarデータを事前投入(`car_id`は既存データと衝突しない値を明示的に指定)
+      - `carMapper.findAll()` の戻り値の件数と各カラム(`carId`/`carName`/`numberPlate`/`status`/`createdAt`/`updatedAt`)のマッピングをAssertJで検証(順序に依存しない比較にする)
+      - `@MybatisTest`はデフォルトで`@Transactional`のため後片付けのDELETEは不要
+
+- [ ] 3. **テスト実行・確認**
+      - `CarMapperTest`を実行してGreenになることを確認
+      - 既存の`CarServiceTest`/`C1000ListControllerTest`/`RentalCarMgmtApplicationTests`にも影響がないか確認(手順1の追加が既存テストに影響しないか)
+
+## 検証方法
+
+- `./mvnw -Dtest=CarMapperTest test` で単体実行しGreenを確認
+- `./mvnw test` でプロジェクト全体のテストを実行し、既存テストに影響がないことを確認
