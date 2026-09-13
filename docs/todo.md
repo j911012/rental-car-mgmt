@@ -25,7 +25,7 @@
       `src/main/resources/application.properties`
       - `mybatis.configuration.map-underscore-to-camel-case=true` を追加(スネークケース列↔キャメルケースプロパティの自動マッピングのため)
 
-- [ ] 2. **Mapperスキャン設定を追加**(既存ファイル変更)
+- [x] 2. **Mapperスキャン設定を追加**(既存ファイル変更)
       `src/main/java/com/example/rental/RentalCarMgmtApplication.java`
       - `@MapperScan("com.example.rental.mapper")` を追加
 
