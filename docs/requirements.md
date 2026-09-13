@@ -63,6 +63,13 @@ Spring Boot + MyBatis + JUnit の実践的なキャッチアップを目的と�
 
 > 返却処理は専用画面を持たず、R2000List からの POST アクション(`/r2000list/return/{reservationId}`)として実装する。
 
+### 画面文言の管理
+
+画面のタイトル・ラベル・ボタン文言は HTML / Java に直書きせず、`src/main/resources/messages.properties` に集約する(実務で見られた i18n の仕組みを再現。ただし英語版は作らず `LocaleResolver` の実装も行わない)。
+
+- キー名: `画面ID(小文字).項目名`(例: `c1000list.title`)、画面共通のボタン等は `common.` プレフィックス(例: `common.regist`)
+- Thymeleaf側は `th:text="#{キー名}"` で参照(HTMLタグを含む文言のみ `th:utext`)
+
 ### パッケージ構成
 
 Controller / Service / Mapper のレイヤー単位で切る(package by layer)。実務の業務システムで一般的な構成に合わせる。

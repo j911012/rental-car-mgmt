@@ -40,6 +40,16 @@ com.example.rental
 - 検索条件が任意項目の場合は、MyBatisの `<if>` / `<where>` タグで動的SQLを組む
 - JOIN結果はEntityに無理に詰めず、DTOを作る
 
+## 画面文言の管理(i18n)
+
+画面に表示するタイトル・ラベル・ボタン文言は、HTMLやJavaに直書きせず `src/main/resources/messages.properties` に集約する。
+
+- 英語版は作らない。多言語切り替え(`LocaleResolver`)の実装は不要
+- キー名は「画面ID(小文字).項目名」を基本形にする(例: `c1000list.title`, `c1000regist.submit`)
+- ボタン名など画面をまたいで共通のものは `common.` プレフィックスを使う(例: `common.regist`, `common.edit`, `common.delete`)
+- Thymeleaf側では `th:text="#{キー名}"` で参照する(HTMLタグを含む文言のみ `th:utext`)
+- `messages.properties` はエディタ上で日本語のまま編集してよい(保存時にIDEが自動でUnicodeエスケープすることがあるが、動作に影響はないため気にしなくてよい)
+
 ## テストのルール
 
 - **実装したら、同じタイミングで対応するテストも書く**(後回しにしない)
