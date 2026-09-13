@@ -29,7 +29,7 @@
       `src/main/java/com/example/rental/RentalCarMgmtApplication.java`
       - `@MapperScan("com.example.rental.mapper")` を追加
 
-- [ ] 3. **Entity作成**
+- [x] 3. **Entity作成**
       `src/main/java/com/example/rental/entity/Car.java`
       - `carId(Integer)` / `carName(String)` / `numberPlate(String)` / `status(String)` / `createdAt(LocalDateTime)` / `updatedAt(LocalDateTime)`
       - Lombok未導入のためgetter/setterは素で書く
