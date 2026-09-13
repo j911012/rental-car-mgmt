@@ -48,7 +48,7 @@
       - `@Service`、コンストラクタインジェクションで`CarMapper`を受け取る
       - `findAll()`が`carMapper.findAll()`をそのまま返す
 
-- [ ] 7. **Serviceテスト作成**
+- [x] 7. **Serviceテスト作成**
       `src/test/java/com/example/rental/service/CarServiceTest.java`
       - Mockitoで`CarMapper`をモック化し、`findAll()`がモックの戻り値をそのまま返すことのみ検証
 
