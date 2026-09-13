@@ -43,7 +43,7 @@
       - namespace: `com.example.rental.mapper.CarMapper`
       - `findAll` は単純な `SELECT ... FROM car`(`<if>`/`<where>`は使わない)
 
-- [ ] 6. **Service作成**
+- [x] 6. **Service作成**
       `src/main/java/com/example/rental/service/CarService.java`
       - `@Service`、コンストラクタインジェクションで`CarMapper`を受け取る
       - `findAll()`が`carMapper.findAll()`をそのまま返す
