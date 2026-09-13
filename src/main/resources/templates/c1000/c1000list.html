@@ -1,0 +1,29 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="#{c1000list.title}"></title>
+  </head>
+  <body>
+    <h1 th:text="#{c1000list.title}"></h1>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th th:text="#{c1000list.carId}"></th>
+          <th th:text="#{c1000list.carName}"></th>
+          <th th:text="#{c1000list.numberPlate}"></th>
+          <th th:text="#{c1000list.status}"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="car : ${carList}">
+          <td th:text="${car.carId}"></td>
+          <td th:text="${car.carName}"></td>
+          <td th:text="${car.numberPlate}"></td>
+          <td th:text="${car.status}"></td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

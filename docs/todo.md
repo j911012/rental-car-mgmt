@@ -67,7 +67,7 @@
       - `c1000list.title`(車両一覧) / `c1000list.carId` / `c1000list.carName` / `c1000list.numberPlate` / `c1000list.status`
       - 検索・新規登録・編集・削除関連のキーはstep4/5まで作らない
 
-- [ ] 11. **テンプレート作成**
+- [x] 11. **テンプレート作成**
       `src/main/resources/templates/c1000/c1000list.html`
       - 最小構成: タイトル + 一覧テーブルのみ
       - `th:each`でModel属性`carList`をループし、`carId`/`carName`/`numberPlate`/`status`を表示。見出しは`th:text="#{c1000list.xxx}"`で参照
