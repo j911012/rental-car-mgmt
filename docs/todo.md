@@ -38,7 +38,7 @@
       `src/main/java/com/example/rental/mapper/CarMapper.java`
       - `List<Car> findAll();` のみ(条件なし全件取得)
 
-- [ ] 5. **Mapper XML作成**
+- [x] 5. **Mapper XML作成**
       `src/main/resources/mapper/CarMapper.xml`
       - namespace: `com.example.rental.mapper.CarMapper`
       - `findAll` は単純な `SELECT ... FROM car`(`<if>`/`<where>`は使わない)

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.rental.mapper.CarMapper">
+
+    <select id="findAll" resultType="com.example.rental.entity.Car">
+        SELECT
+            car_id,
+            car_name,
+            number_plate,
+            status,
+            created_at,
+            updated_at
+        FROM car
+    </select>
+
+</mapper>
