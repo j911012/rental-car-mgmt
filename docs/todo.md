@@ -34,7 +34,7 @@
       - `carId(Integer)` / `carName(String)` / `numberPlate(String)` / `status(String)` / `createdAt(LocalDateTime)` / `updatedAt(LocalDateTime)`
       - Lombok未導入のためgetter/setterは素で書く
 
-- [ ] 4. **Mapper interface作成**
+- [x] 4. **Mapper interface作成**
       `src/main/java/com/example/rental/mapper/CarMapper.java`
       - `List<Car> findAll();` のみ(条件なし全件取得)
 
