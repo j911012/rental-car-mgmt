@@ -25,10 +25,9 @@
       `src/main/resources/application.properties`
       - `mybatis.configuration.map-underscore-to-camel-case=true` を追加(スネークケース列↔キャメルケースプロパティの自動マッピングのため)
 
-- [x] 2. **Mapperスキャン設定を追加**(既存ファイル変更)
-      `src/main/java/com/example/rental/config/MyBatisConfig.java`(新規)
-      - `@MapperScan("com.example.rental.mapper")` を独立した`@Configuration`クラスに追加
-      - ※メインの`@SpringBootApplication`クラスに直接付けると`@WebMvcTest`等のスライステストでもMapperScannerConfigurerが動きSqlSessionFactory不在で失敗するため、別クラスに切り出した(実装中に判明)
+- [x] 2. **Mapperの登録方式を決定**
+      - 当初は`config/MyBatisConfig.java`に`@MapperScan`を切り出していたが、step3で`@MybatisTest`のスライスからも除外されBeanが解決できないことが判明
+      - 最終的に**Mapperインターフェースに`@Mapper`を付ける方式**に変更し、`MyBatisConfig`は削除(MyBatisの自動設定が`@Mapper`を検出するため、アプリ実行時・`@MybatisTest`の双方で動作する)
 
 - [x] 3. **Entity作成**
       `src/main/java/com/example/rental/entity/Car.java`
@@ -37,7 +36,7 @@
 
 - [x] 4. **Mapper interface作成**
       `src/main/java/com/example/rental/mapper/CarMapper.java`
-      - `List<Car> findAll();` のみ(条件なし全件取得)
+      - `@Mapper`を付け、`List<Car> findAll();` のみ(条件なし全件取得)
 
 - [x] 5. **Mapper XML作成**
       `src/main/resources/mapper/CarMapper.xml`
