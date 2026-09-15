@@ -6,19 +6,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.rental.service.CarService;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
-public class C1000ListController {
+@RequiredArgsConstructor
+public class CarListController {
 
 	private final CarService carService;
 
-	public C1000ListController(CarService carService) {
-		this.carService = carService;
-	}
-
-	@GetMapping("/c1000list")
+	@GetMapping("/cars")
 	public String list(Model model) {
 		model.addAttribute("carList", carService.findAll());
-		return "c1000/c1000list";
+		return "car/list";
 	}
 
 }

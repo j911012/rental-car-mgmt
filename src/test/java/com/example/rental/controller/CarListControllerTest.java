@@ -15,8 +15,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import com.example.rental.entity.Car;
 import com.example.rental.service.CarService;
 
-@WebMvcTest(C1000ListController.class)
-class C1000ListControllerTest {
+@WebMvcTest(CarListController.class)
+class CarListControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
@@ -33,9 +33,9 @@ class C1000ListControllerTest {
 		car.setStatus("AVAILABLE");
 		when(carService.findAll()).thenReturn(List.of(car));
 
-		mockMvc.perform(MockMvcRequestBuilders.get("/c1000list"))
+		mockMvc.perform(MockMvcRequestBuilders.get("/cars"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
-				.andExpect(MockMvcResultMatchers.view().name("c1000/c1000list"))
+				.andExpect(MockMvcResultMatchers.view().name("car/list"))
 				.andExpect(MockMvcResultMatchers.model().attributeExists("carList"));
 	}
 
