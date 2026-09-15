@@ -110,15 +110,17 @@
       - `mybatis.configuration.map-underscore-to-camel-case=true`
       - ※テスト用クラスパスの`application.properties`は本番設定を完全に置き換える(マージされない)ため、必要な設定を漏れなく複製する
 
-- [ ] 2. **CarMapperTest作成**
+- [x] 2. **CarMapperTest作成**
       `src/test/java/com/example/rental/mapper/CarMapperTest.java`
       - `@MybatisTest` + `@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)`(H2等への自動差し替えを無効化し、`rental_test`に接続させる)
       - `@Autowired CarMapper carMapper`
-      - `@Sql(statements = {...})` で2〜3件のcarデータを事前投入(`car_id`は既存データと衝突しない値を明示的に指定)
-      - `carMapper.findAll()` の戻り値の件数と各カラム(`carId`/`carName`/`numberPlate`/`status`/`createdAt`/`updatedAt`)のマッピングをAssertJで検証(順序に依存しない比較にする)
+      - `@Sql(statements = {...})` で2件のcarデータを事前投入(`car_id`は既存データと衝突しない値を明示的に指定)。先頭に`DELETE FROM car`を入れてテーブルの状態に依存しないようにする
+      - `carMapper.findAll()` の戻り値の各カラム(`carId`/`carName`/`numberPlate`/`status`/`createdAt`/`updatedAt`)のマッピングをAssertJで検証(`containsExactlyInAnyOrder`で順序に依存しない比較)
+      - 0件の場合に空リストを返すことも検証
       - `@MybatisTest`はデフォルトで`@Transactional`のため後片付けのDELETEは不要
+      - ※`@MapperScan`を`MyBatisConfig`に切り出していたため`@MybatisTest`のスライスから除外されBeanが見つからなかった。`CarMapper`に`@Mapper`を付けて`MyBatisConfig`を削除する方式に変更(実装中に判明)
 
-- [ ] 3. **テスト実行・確認**
+- [x] 3. **テスト実行・確認**
       - `CarMapperTest`を実行してGreenになることを確認
       - 既存の`CarServiceTest`/`CarListControllerTest`/`RentalCarMgmtApplicationTests`にも影響がないか確認(手順1の追加が既存テストに影響しないか)
 
