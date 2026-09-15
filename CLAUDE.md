@@ -5,8 +5,9 @@
 
 ## 技術スタック
 
-- Java 17 / Spring Boot 3.x / Maven
+- Java 17 / Spring Boot 4.0.8 / Maven
 - MyBatis(`mybatis-spring-boot-starter`) — JPAは使わない
+- Lombok — Entity / Form / DTO には `@Data` を付け、getter/setterは手書きしない
 - Thymeleaf
 - DB: MySQL(DBeaverで接続確認する。テストは別スキーマ `rental_test` を使う)
 - テスト: JUnit 5 / Mockito / AssertJ / `mybatis-spring-boot-starter-test`
@@ -27,10 +28,12 @@ com.example.rental
 
 ## 命名規則
 
-- 画面ID: `[機能区分1文字][連番4桁][アクション名]` (例: `C1000List`, `C1000Regist`, `R2000List`)
-- URLは画面IDを小文字にしたもの(例: `/c1000list`)
-- Controllerクラス名は画面IDそのまま + `Controller`(例: `C1000ListController`)
-- テンプレートは `templates/{機能区分+連番}/{画面ID小文字}.html`
+画面ID(`C1000List`のような記号的な命名)は不採用。**エンティティ名(Car / Reservation)ベースの、意味の分かる名前**に統一する。
+
+- URL: `/cars`(一覧), `/cars/new`(登録), `/cars/{carId}/edit`(編集), `/reservations`(一覧), `/reservations/new`(登録)
+- Controllerクラス名: `CarListController`, `CarRegistController`, `CarEditController`, `ReservationListController`, `ReservationRegistController`
+- テンプレート: `templates/car/list.html`, `templates/car/regist.html`, `templates/car/edit.html`, `templates/reservation/list.html`, `templates/reservation/regist.html`
+- 返却処理は専用画面を持たず、`ReservationListController`内のPOSTアクション(`/reservations/{reservationId}/return`)として実装する
 
 ## 実装時のルール
 
@@ -39,13 +42,15 @@ com.example.rental
 - 複数テーブルを更新する処理(貸出登録・返却処理など)には `@Transactional` を付ける
 - 検索条件が任意項目の場合は、MyBatisの `<if>` / `<where>` タグで動的SQLを組む
 - JOIN結果はEntityに無理に詰めず、DTOを作る
+- Entity / Form / DTO は Lombok の `@Data` を使い、getter/setter/toString/equals/hashCode は手書きしない
+- Controller / Service などDIを受けるクラスは、Lombok の `@RequiredArgsConstructor` + `private final` フィールドでコンストラクタインジェクションする(コンストラクタは手書きしない)
 
 ## 画面文言の管理(i18n)
 
 画面に表示するタイトル・ラベル・ボタン文言は、HTMLやJavaに直書きせず `src/main/resources/messages.properties` に集約する。
 
 - 英語版は作らない。多言語切り替え(`LocaleResolver`)の実装は不要
-- キー名は「画面ID(小文字).項目名」を基本形にする(例: `c1000list.title`, `c1000regist.submit`)
+- キー名は「画面名(camelCase).項目名」を基本形にする(例: `carList.title`, `carRegist.submit`)
 - ボタン名など画面をまたいで共通のものは `common.` プレフィックスを使う(例: `common.regist`, `common.edit`, `common.delete`)
 - Thymeleaf側では `th:text="#{キー名}"` で参照する(HTMLタグを含む文言のみ `th:utext`)
 - `messages.properties` はエディタ上で日本語のまま編集してよい(保存時にIDEが自動でUnicodeエスケープすることがあるが、動作に影響はないため気にしなくてよい)

@@ -7,7 +7,7 @@ Spring Boot + MyBatis + JUnit の実践的なキャッチアップを目的と�
 
 - MyBatis による DB アクセス(Entity / Mapper 構成)
 - JUnit によるレイヤーごとのテスト
-- 画面ID による URL・Controller・テンプレートの一貫した命名
+- 意味の分かる名前(Car / Reservation ベース)による URL・Controller・テンプレートの一貫した命名
 - サイドバーを持つ業務システム型の CRUD 画面
 
 ## 2. スコープ
@@ -28,46 +28,37 @@ Spring Boot + MyBatis + JUnit の実践的なキャッチアップを目的と�
 
 ## 3. 技術スタック
 
-| 区分           | 採用技術                                                         | 備考                                      |
-| -------------- | ---------------------------------------------------------------- | ----------------------------------------- |
-| 言語           | Java 17                                                          | Gradle/Spring Boot との互換性が安定       |
-| フレームワーク | Spring Boot 3.x                                                  |                                           |
-| ビルドツール   | Maven                                                            | Udemy課題と同じ構成で余計なハマりを避ける |
-| DB アクセス    | MyBatis (`mybatis-spring-boot-starter`)                          | 実務と同じ方式                            |
-| テンプレート   | Thymeleaf                                                        | 既習のため                                |
-| DB             | H2(開発用)                                                       | セットアップ不要。MySQL に切り替えても可  |
-| テスト         | JUnit 5 / Mockito / AssertJ / `mybatis-spring-boot-starter-test` |                                           |
+| 区分           | 採用技術                                                         | 備考                                                       |
+| -------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| 言語           | Java 17                                                          | Gradle/Spring Boot との互換性が安定                        |
+| フレームワーク | Spring Boot 4.0.8                                                | Spring Initializr上でMyBatis Frameworkと互換性のある安定版 |
+| ビルドツール   | Maven                                                            | Udemy課題と同じ構成で余計なハマりを避ける                  |
+| DB アクセス    | MyBatis (`mybatis-spring-boot-starter`)                          | 実務と同じ方式                                             |
+| テンプレート   | Thymeleaf                                                        | 既習のため                                                 |
+| DB             | MySQL(DBeaverで接続)                                             | 開発用`rental`、テスト用`rental_test`の2スキーマ           |
+| テスト         | JUnit 5 / Mockito / AssertJ / `mybatis-spring-boot-starter-test` |                                                            |
 
 ## 4. 命名規則
 
-実務のパターン(`a1000regist` のような画面ID)を踏襲する。
-
-### 画面ID 体系
-
-```
-[機能区分1文字][連番4桁][アクション名]
-```
-
-- 機能区分: `C` = 車両(Car)、`R` = 貸出(Reservation)
-- 連番: 機能ごとに `1000`, `2000` と採番
+画面ID(`C1000List`のような記号的な命名)は、実務で使われる理由(画面数が多い・チーム開発でチケットと対応付けたい、など)が今回の学習規模には当てはまらず、可読性を落とすだけと判断し不採用とした。**エンティティ名(Car / Reservation)をベースにした、意味の分かる名前**に統一する。
 
 ### 命名の対応表
 
-| 画面ID      | URL                  | Controller              | テンプレート                       |
-| ----------- | -------------------- | ----------------------- | ---------------------------------- |
-| C1000List   | `/c1000list`         | `C1000ListController`   | `templates/c1000/c1000list.html`   |
-| C1000Regist | `/c1000regist`       | `C1000RegistController` | `templates/c1000/c1000regist.html` |
-| C1000Edit   | `/c1000edit/{carId}` | `C1000EditController`   | `templates/c1000/c1000edit.html`   |
-| R2000List   | `/r2000list`         | `R2000ListController`   | `templates/r2000/r2000list.html`   |
-| R2000Regist | `/r2000regist`       | `R2000RegistController` | `templates/r2000/r2000regist.html` |
+| 画面                        | URL                  | Controller                    | テンプレート                        |
+| --------------------------- | -------------------- | ----------------------------- | ----------------------------------- |
+| 車両一覧(CarList)           | `/cars`              | `CarListController`           | `templates/car/list.html`           |
+| 車両登録(CarRegist)         | `/cars/new`          | `CarRegistController`         | `templates/car/regist.html`         |
+| 車両編集(CarEdit)           | `/cars/{carId}/edit` | `CarEditController`           | `templates/car/edit.html`           |
+| 貸出一覧(ReservationList)   | `/reservations`      | `ReservationListController`   | `templates/reservation/list.html`   |
+| 貸出登録(ReservationRegist) | `/reservations/new`  | `ReservationRegistController` | `templates/reservation/regist.html` |
 
-> 返却処理は専用画面を持たず、R2000List からの POST アクション(`/r2000list/return/{reservationId}`)として実装する。
+> 返却処理は専用画面を持たず、貸出一覧(ReservationList)からの POST アクション(`/reservations/{reservationId}/return`)として、`ReservationListController`内に実装する。
 
 ### 画面文言の管理
 
 画面のタイトル・ラベル・ボタン文言は HTML / Java に直書きせず、`src/main/resources/messages.properties` に集約する(実務で見られた i18n の仕組みを再現。ただし英語版は作らず `LocaleResolver` の実装も行わない)。
 
-- キー名: `画面ID(小文字).項目名`(例: `c1000list.title`)、画面共通のボタン等は `common.` プレフィックス(例: `common.regist`)
+- キー名: `画面名(camelCase).項目名`(例: `carList.title`, `carRegist.submit`)、画面共通のボタン等は `common.` プレフィックス(例: `common.regist`, `common.edit`, `common.delete`)
 - Thymeleaf側は `th:text="#{キー名}"` で参照(HTMLタグを含む文言のみ `th:utext`)
 
 ### パッケージ構成
@@ -77,11 +68,11 @@ Controller / Service / Mapper のレイヤー単位で切る(package by layer)�
 ```
 com.example.rental
 ├── controller
-│   ├── C1000ListController.java
-│   ├── C1000RegistController.java
-│   ├── C1000EditController.java
-│   ├── R2000ListController.java
-│   └── R2000RegistController.java
+│   ├── CarListController.java
+│   ├── CarRegistController.java
+│   ├── CarEditController.java
+│   ├── ReservationListController.java
+│   └── ReservationRegistController.java
 ├── service
 │   ├── CarService.java
 │   └── ReservationService.java
@@ -155,33 +146,33 @@ com.example.rental
 - 登録・更新処理は **PRG パターン**(POST → リダイレクト → GET)で実装する
 - 完了メッセージは Flash Scope(`RedirectAttributes.addFlashAttribute()`)で受け渡す
 
-### 6-2. C1000List(車両一覧)
+### 6-2. 車両一覧(CarList)
 
 - 車両を一覧表示する
 - **検索条件**(いずれも任意、未入力時は条件から除外)
   - 車種名: 部分一致
   - ステータス: 完全一致(プルダウン)
 - 各行に「編集」「削除」リンクを表示する
-- 「新規登録」ボタンから C1000Regist へ遷移する
+- 「新規登録」ボタンから車両登録(CarRegist)へ遷移する
 
 > 検索条件が任意のため、**MyBatis の動的SQL(`<if>` / `<where>`)** を使う。本アプリで動的SQLを学ぶ中心の画面。
 
-### 6-3. C1000Regist(車両登録)
+### 6-3. 車両登録(CarRegist)
 
 - 車種名・ナンバー・ステータスを入力して登録する
 - バリデーション
   - 車種名: 必須、50文字以内
   - ナンバー: 必須、20文字以内、**既存データと重複不可**
-- 登録成功後は C1000List へリダイレクトする
+- 登録成功後は車両一覧(CarList)へリダイレクトする
 
-### 6-4. C1000Edit(車両編集)
+### 6-4. 車両編集(CarEdit)
 
 - 既存車両の情報を更新する
-- バリデーションは C1000Regist と同様(ナンバー重複チェックは自レコードを除外する)
+- バリデーションは車両登録(CarRegist)と同様(ナンバー重複チェックは自レコードを除外する)
 - **貸出中(`RENTED`)の車両はステータスを手動変更できない**(Service 層でチェック)
 - 削除は、**貸出履歴が存在する車両は削除不可**とする
 
-### 6-5. R2000List(貸出一覧)
+### 6-5. 貸出一覧(ReservationList)
 
 - 貸出情報を一覧表示する。車種名・顧客名を **JOIN して同時に表示する**
 - **検索条件**(いずれも任意)
@@ -192,7 +183,7 @@ com.example.rental
 
 > JOIN 結果は Entity ではなく **DTO(`ReservationDetailDto`)** で受け取る。MyBatis の `resultMap` によるマッピングを学ぶ箇所。
 
-### 6-6. R2000Regist(貸出登録)
+### 6-6. 貸出登録(ReservationRegist)
 
 - 車両・顧客・貸出日・返却予定日を指定して貸出を登録する
 - 車両プルダウンには **ステータスが `AVAILABLE` の車両のみ** を表示する
@@ -203,13 +194,13 @@ com.example.rental
   - 対象車両が `AVAILABLE` でない場合はエラー(プルダウン表示後に他者が貸出した場合の考慮)
   - 登録成功時、`reservation` を INSERT し、同時に `car.status` を `RENTED` に UPDATE する(**同一トランザクション**)
 
-### 6-7. 返却処理(R2000List からのアクション)
+### 6-7. 返却処理(貸出一覧 ReservationList からのアクション)
 
 - 「返却」ボタン押下で以下を実行する
   - `reservation.status` を `RETURNED` に更新
   - 対象車両の `car.status` を `AVAILABLE` に更新
   - 上記2つは **同一トランザクション**(`@Transactional`)
-- 処理後は R2000List へリダイレクトし、完了メッセージを表示する
+- 処理後は貸出一覧(ReservationList)へリダイレクトし、完了メッセージを表示する
 
 > 「登録」でも「フォーム経由の更新」でもない、**状態遷移のみのワンクリック更新**。実務の承認・完了処理でよく出るパターン。
 
@@ -251,10 +242,10 @@ com.example.rental
 
 1. プロジェクト雛形作成、DB 接続確認、テーブル作成
 2. `Car` 周辺を縦に1本通す(Entity → Mapper → Service → Controller → 画面)
-   - このとき C1000List の検索は条件なしの単純な全件取得から始める
+   - このとき車両一覧(CarList)の検索は条件なしの単純な全件取得から始める
 3. `CarMapper` のテストを書く
-4. C1000List に検索条件を追加し、**動的SQL** に踏み込む → テストも追加
-5. C1000Regist / C1000Edit を実装 → 各層のテストを追加
+4. 車両一覧(CarList)に検索条件を追加し、**動的SQL** に踏み込む → テストも追加
+5. 車両登録(CarRegist)/ 車両編集(CarEdit)を実装 → 各層のテストを追加
 6. `Reservation` 周辺を実装(JOIN・DTO・トランザクションが登場)
 7. 返却処理を実装 → Service 層のテストを重点的に書く
 8. サイドバーの共通レイアウト化
