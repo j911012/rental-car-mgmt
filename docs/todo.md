@@ -104,7 +104,7 @@
 
 ## TODOリスト
 
-- [ ] 1. **テスト用DB接続設定を追加**(新規ファイル)
+- [x] 1. **テスト用DB接続設定を追加**(新規ファイル)
       `src/test/resources/application.properties`
       - `spring.datasource.url=jdbc:mysql://localhost:3306/rental_test`(username/password/driver-class-nameは本番と同じ値)
       - `mybatis.mapper-locations=classpath:mapper/*.xml`
