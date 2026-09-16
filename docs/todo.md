@@ -162,7 +162,7 @@
       - MyBatisは標準の`EnumTypeHandler`がVARCHAR↔enum名を変換するため設定追加は不要(テスト実行で確認)
       - ※Entityの型変更のため、既存テストの修正も同じコミットに含めないとコンパイルが通らない
 
-- [ ] 2. **CarSearchForm作成**
+- [x] 2. **CarSearchForm作成**
       `src/main/java/com/example/rental/form/CarSearchForm.java`(新規、`form`パッケージ新設)
       - `@Data`、フィールド `carName`(String) / `status`(CarStatus)
 
