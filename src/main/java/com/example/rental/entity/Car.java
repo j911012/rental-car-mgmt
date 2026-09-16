@@ -10,7 +10,7 @@ public class Car {
 	private Integer carId;
 	private String carName;
 	private String numberPlate;
-	private String status;
+	private CarStatus status;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 

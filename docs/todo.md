@@ -155,7 +155,7 @@
 
 ## TODOリスト(各項目の完了時点で全テストGreenを保てる順序)
 
-- [ ] 1. **CarStatus enum作成と`Car.status`の型変更**
+- [x] 1. **CarStatus enum作成と`Car.status`の型変更**
       `src/main/java/com/example/rental/entity/CarStatus.java`(新規) / `src/main/java/com/example/rental/entity/Car.java`
       - `Car.status`を`String`から`CarStatus`に変更
       - 既存テスト3件を追従: `CarMapperTest`(期待値を`CarStatus.AVAILABLE`等に)、`CarServiceTest`・`CarListControllerTest`(`setStatus(CarStatus.AVAILABLE)`)

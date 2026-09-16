@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.rental.entity.Car;
+import com.example.rental.entity.CarStatus;
 import com.example.rental.mapper.CarMapper;
 
 @ExtendWith(MockitoExtension.class)
@@ -25,7 +26,7 @@ class CarServiceTest {
 		car.setCarId(1);
 		car.setCarName("プリウス");
 		car.setNumberPlate("品川500あ1234");
-		car.setStatus("AVAILABLE");
+		car.setStatus(CarStatus.AVAILABLE);
 		List<Car> expected = List.of(car);
 		when(carMapper.findAll()).thenReturn(expected);
 

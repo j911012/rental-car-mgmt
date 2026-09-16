@@ -13,6 +13,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.rental.entity.Car;
+import com.example.rental.entity.CarStatus;
 import com.example.rental.service.CarService;
 
 @WebMvcTest(CarListController.class)
@@ -30,7 +31,7 @@ class CarListControllerTest {
 		car.setCarId(1);
 		car.setCarName("プリウス");
 		car.setNumberPlate("品川500あ1234");
-		car.setStatus("AVAILABLE");
+		car.setStatus(CarStatus.AVAILABLE);
 		when(carService.findAll()).thenReturn(List.of(car));
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/cars"))

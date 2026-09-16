@@ -13,6 +13,7 @@ import org.springframework.boot.jdbc.test.autoconfigure.AutoConfigureTestDatabas
 import org.springframework.test.context.jdbc.Sql;
 
 import com.example.rental.entity.Car;
+import com.example.rental.entity.CarStatus;
 
 @MybatisTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
@@ -35,10 +36,10 @@ class CarMapperTest {
 				.extracting(Car::getCarId, Car::getCarName, Car::getNumberPlate, Car::getStatus, Car::getCreatedAt,
 						Car::getUpdatedAt)
 				.containsExactlyInAnyOrder(
-						tuple(9901, "プリウス", "品川500あ1234", "AVAILABLE",
+						tuple(9901, "プリウス", "品川500あ1234", CarStatus.AVAILABLE,
 								LocalDateTime.of(2026, 1, 1, 10, 0, 0),
 								LocalDateTime.of(2026, 1, 2, 11, 0, 0)),
-						tuple(9902, "アクア", "品川500あ5678", "RENTED",
+						tuple(9902, "アクア", "品川500あ5678", CarStatus.RENTED,
 								LocalDateTime.of(2026, 2, 3, 12, 0, 0),
 								LocalDateTime.of(2026, 2, 4, 13, 0, 0)));
 	}
