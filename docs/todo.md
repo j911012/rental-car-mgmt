@@ -128,3 +128,85 @@
 
 - `./mvnw -Dtest=CarMapperTest test` で単体実行しGreenを確認
 - `./mvnw test` でプロジェクト全体のテストを実行し、既存テストに影響がないことを確認
+
+---
+
+# TODO: 8章 step4「車両一覧に検索条件を追加し、動的SQLに踏み込む」
+
+`docs/requirements.md` 8章の実装順序のうち、**step4**(車両一覧に検索条件を追加し、動的SQLに踏み込む → テストも追加)のみを対象にしたTODOリスト。
+まだ実装はしていない。1項目ずつ実装し、完了したらチェックを付けていく。
+
+## 対象範囲
+
+- 対象: 要件書6-2の検索条件(いずれも任意、未入力時は条件から除外)
+  - 車種名: 部分一致
+  - ステータス: 完全一致(プルダウン)
+- MyBatisの`<where>`/`<if>`による動的SQLと、7-1の分岐パターン(条件なし / 車種名のみ / ステータスのみ / 両方指定)を網羅するMapperテスト
+- 対象外(後続stepへ明示的に先送り):
+  - 各行の編集/削除リンク、新規登録ボタン → step5
+  - 共通サイドバーレイアウト → step8
+
+## 前提・確認済み事項
+
+- Mapperには`CarSearchForm`をそのまま渡す: `List<Car> search(CarSearchForm form)`
+- `CarStatus` enum(`AVAILABLE` / `RENTED` / `MAINTENANCE`)を`entity`パッケージに新規作成し、**`Car.status`と`CarSearchForm.status`の型もenumにする**
+- ステータスは画面上コード値のまま表示する(日本語ラベル化はしない)
+- 検索条件は任意のため、バリデーション(`spring-boot-starter-validation`)は導入しない
+
+## TODOリスト(各項目の完了時点で全テストGreenを保てる順序)
+
+- [ ] 1. **CarStatus enum作成と`Car.status`の型変更**
+      `src/main/java/com/example/rental/entity/CarStatus.java`(新規) / `src/main/java/com/example/rental/entity/Car.java`
+      - `Car.status`を`String`から`CarStatus`に変更
+      - 既存テスト3件を追従: `CarMapperTest`(期待値を`CarStatus.AVAILABLE`等に)、`CarServiceTest`・`CarListControllerTest`(`setStatus(CarStatus.AVAILABLE)`)
+      - MyBatisは標準の`EnumTypeHandler`がVARCHAR↔enum名を変換するため設定追加は不要(テスト実行で確認)
+      - ※Entityの型変更のため、既存テストの修正も同じコミットに含めないとコンパイルが通らない
+
+- [ ] 2. **CarSearchForm作成**
+      `src/main/java/com/example/rental/form/CarSearchForm.java`(新規、`form`パッケージ新設)
+      - `@Data`、フィールド `carName`(String) / `status`(CarStatus)
+
+- [ ] 3. **Mapperに動的SQLの`search`を追加 + Mapperテスト**
+      `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+      - `List<Car> search(CarSearchForm form);` を追加(この時点では`findAll`も残し、Service/Controllerを壊さない)
+      - XMLは`<where>`の中に以下を置く
+        - `<if test="carName != null and carName != ''">AND car_name LIKE CONCAT('%', #{carName}, '%')</if>`
+        - `<if test="status != null">AND status = #{status}</if>`
+      - `ORDER BY car_id` を付けて一覧の並びを安定させる
+      - `@Sql`で車種名・ステータスが異なる3件程度を投入し、以下を検証
+        - 条件なし(全件) / 車種名のみ(部分一致) / ステータスのみ / 両方指定 / 車種名が空文字(条件から除外される) / 該当0件
+
+- [ ] 4. **Serviceを`search`に切り替え + テスト**
+      `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
+      - `findAll()` → `search(CarSearchForm form)`(Mapperへ委譲)
+      - 受け取ったFormをそのままMapperに渡し、結果を返すことを検証
+      - ※Controllerが`findAll()`を呼んでいるため、この項目ではControllerの呼び出しも`search(new CarSearchForm())`等へ最小限追従させる(本格対応は項目5)
+
+- [ ] 5. **Controller・画面・文言を検索対応 + テスト**
+      `src/main/java/com/example/rental/controller/CarListController.java` / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarListControllerTest.java`
+      - Controller: `list(@ModelAttribute CarSearchForm carSearchForm, Model model)`
+        - `carList`に`carService.search(carSearchForm)`の結果、`statusList`に`CarStatus.values()`を詰める
+      - テンプレート: 一覧テーブルの上にGETの検索フォームを追加
+        - `th:object="${carSearchForm}"`、車種名は`th:field="*{carName}"`のテキスト、ステータスは`th:field="*{status}"`の`<select>`(先頭に未選択の空option、選択肢は`statusList`)、検索ボタン
+      - messages.properties: `carList.searchCarName` / `carList.searchStatus` / `carList.statusUnselected`(未選択の表示) / `common.search`(検索ボタン。貸出一覧でも使うため`common.`)
+      - Controllerテスト
+        - 条件なしのGETで、ビュー名・`carList`・`statusList`・`carSearchForm`がModelにあること
+        - `?carName=プリ&status=RENTED`のGETで、Serviceに渡ったFormに値がバインドされていること(`ArgumentCaptor`で検証)
+
+- [ ] 6. **不要になった`findAll`を削除**
+      `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+      - Mapperの`findAll`とそのテストを削除(項目3の「条件なし」「0件」ケースで代替済み)
+
+- [ ] 7. **テスト実行と手動確認**
+      - `./mvnw test` で全テストGreen
+      - アプリ起動 → `http://localhost:8080/cars` で、未入力・車種名のみ・ステータスのみ・両方の検索が期待通り動くことを目視確認
+
+## 把握しておくリスク・注意点
+
+- `status=`(空文字)はSpringのenum変換で`null`になり条件から除外される。一方`status=FOO`のような不正値はバインドエラー(400)になる。プルダウン経由では発生しないため、step4ではハンドリングしない
+- `LIKE`の部分一致で、入力に`%`や`_`が含まれるとワイルドカードとして解釈される。学習範囲外として今回はエスケープしない
+
+## 検証方法
+
+- 各項目の完了ごとに `./mvnw test` で全テストGreenを確認
+- 最後にアプリを起動し `/cars` で検索動作を目視確認
