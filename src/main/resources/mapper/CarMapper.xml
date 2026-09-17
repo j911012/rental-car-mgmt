@@ -15,4 +15,24 @@
         FROM car
     </select>
 
+    <select id="search" resultType="com.example.rental.entity.Car">
+        SELECT
+            car_id,
+            car_name,
+            number_plate,
+            status,
+            created_at,
+            updated_at
+        FROM car
+        <where>
+            <if test="carName != null and carName != ''">
+                AND car_name LIKE CONCAT('%', #{carName}, '%')
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY car_id
+    </select>
+
 </mapper>

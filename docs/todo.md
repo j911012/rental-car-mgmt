@@ -166,7 +166,7 @@
       `src/main/java/com/example/rental/form/CarSearchForm.java`(新規、`form`パッケージ新設)
       - `@Data`、フィールド `carName`(String) / `status`(CarStatus)
 
-- [ ] 3. **Mapperに動的SQLの`search`を追加 + Mapperテスト**
+- [x] 3. **Mapperに動的SQLの`search`を追加 + Mapperテスト**
       `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
       - `List<Car> search(CarSearchForm form);` を追加(この時点では`findAll`も残し、Service/Controllerを壊さない)
       - XMLは`<where>`の中に以下を置く
