@@ -1,11 +1,14 @@
 package com.example.rental.controller;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -28,7 +31,7 @@ class CarListControllerTest {
 	private CarService carService;
 
 	@Test
-	void list_一覧が表示される() throws Exception {
+	void list_条件なしで一覧画面に必要な属性が入る() throws Exception {
 		Car car = new Car();
 		car.setCarId(1);
 		car.setCarName("プリウス");
@@ -39,7 +42,23 @@ class CarListControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.get("/cars"))
 				.andExpect(MockMvcResultMatchers.status().isOk())
 				.andExpect(MockMvcResultMatchers.view().name("car/list"))
-				.andExpect(MockMvcResultMatchers.model().attributeExists("carList"));
+				.andExpect(MockMvcResultMatchers.model().attributeExists("carList", "statusList", "carSearchForm"));
+	}
+
+	@Test
+	void list_検索条件がFormにバインドされてServiceに渡る() throws Exception {
+		when(carService.search(any(CarSearchForm.class))).thenReturn(List.of());
+
+		mockMvc.perform(MockMvcRequestBuilders.get("/cars")
+				.param("carName", "プリ")
+				.param("status", "RENTED"))
+				.andExpect(MockMvcResultMatchers.status().isOk())
+				.andExpect(MockMvcResultMatchers.view().name("car/list"));
+
+		ArgumentCaptor<CarSearchForm> captor = ArgumentCaptor.forClass(CarSearchForm.class);
+		verify(carService).search(captor.capture());
+		assertThat(captor.getValue().getCarName()).isEqualTo("プリ");
+		assertThat(captor.getValue().getStatus()).isEqualTo(CarStatus.RENTED);
 	}
 
 }

@@ -182,7 +182,7 @@
       - 受け取ったFormをそのままMapperに渡し、結果を返すことを検証
       - ※Controllerが`findAll()`を呼んでいるため、この項目ではControllerの呼び出しも`search(new CarSearchForm())`等へ最小限追従させる(本格対応は項目5)
 
-- [ ] 5. **Controller・画面・文言を検索対応 + テスト**
+- [x] 5. **Controller・画面・文言を検索対応 + テスト**
       `src/main/java/com/example/rental/controller/CarListController.java` / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarListControllerTest.java`
       - Controller: `list(@ModelAttribute CarSearchForm carSearchForm, Model model)`
         - `carList`に`carService.search(carSearchForm)`の結果、`statusList`に`CarStatus.values()`を詰める

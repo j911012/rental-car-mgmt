@@ -7,6 +7,19 @@
   <body>
     <h1 th:text="#{carList.title}"></h1>
 
+    <form th:action="@{/cars}" th:object="${carSearchForm}" method="get">
+      <label for="carName" th:text="#{carList.searchCarName}"></label>
+      <input type="text" th:field="*{carName}" />
+
+      <label for="status" th:text="#{carList.searchStatus}"></label>
+      <select th:field="*{status}">
+        <option value="" th:text="#{carList.statusUnselected}"></option>
+        <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+      </select>
+
+      <button type="submit" th:text="#{common.search}"></button>
+    </form>
+
     <table border="1">
       <thead>
         <tr>
