@@ -176,7 +176,7 @@
       - `@Sql`で車種名・ステータスが異なる3件程度を投入し、以下を検証
         - 条件なし(全件) / 車種名のみ(部分一致) / ステータスのみ / 両方指定 / 車種名が空文字(条件から除外される) / 該当0件
 
-- [ ] 4. **Serviceを`search`に切り替え + テスト**
+- [x] 4. **Serviceを`search`に切り替え + テスト**
       `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
       - `findAll()` → `search(CarSearchForm form)`(Mapperへ委譲)
       - 受け取ったFormをそのままMapperに渡し、結果を返すことを検証

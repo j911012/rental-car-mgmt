@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.example.rental.form.CarSearchForm;
 import com.example.rental.service.CarService;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class CarListController {
 
 	@GetMapping("/cars")
 	public String list(Model model) {
-		model.addAttribute("carList", carService.findAll());
+		model.addAttribute("carList", carService.search(new CarSearchForm()));
 		return "car/list";
 	}
 
