@@ -193,7 +193,7 @@
         - 条件なしのGETで、ビュー名・`carList`・`statusList`・`carSearchForm`がModelにあること
         - `?carName=プリ&status=RENTED`のGETで、Serviceに渡ったFormに値がバインドされていること(`ArgumentCaptor`で検証)
 
-- [ ] 6. **不要になった`findAll`を削除**
+- [x] 6. **不要になった`findAll`を削除**
       `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
       - Mapperの`findAll`とそのテストを削除(項目3の「条件なし」「0件」ケースで代替済み)
 

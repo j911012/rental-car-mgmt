@@ -36,33 +36,6 @@ class CarMapperTest {
 	private CarMapper carMapper;
 
 	@Test
-	void findAll_登録済みの車両が全件マッピングされて返る() {
-		List<Car> cars = carMapper.findAll();
-
-		assertThat(cars)
-				.extracting(Car::getCarId, Car::getCarName, Car::getNumberPlate, Car::getStatus, Car::getCreatedAt,
-						Car::getUpdatedAt)
-				.containsExactlyInAnyOrder(
-						tuple(9901, "プリウス", "品川500あ1234", CarStatus.AVAILABLE,
-								LocalDateTime.of(2026, 1, 1, 10, 0, 0),
-								LocalDateTime.of(2026, 1, 2, 11, 0, 0)),
-						tuple(9902, "アクア", "品川500あ5678", CarStatus.RENTED,
-								LocalDateTime.of(2026, 2, 3, 12, 0, 0),
-								LocalDateTime.of(2026, 2, 4, 13, 0, 0)),
-						tuple(9903, "プリウスα", "品川500あ9012", CarStatus.RENTED,
-								LocalDateTime.of(2026, 3, 5, 14, 0, 0),
-								LocalDateTime.of(2026, 3, 6, 15, 0, 0)));
-	}
-
-	@Test
-	@Sql(statements = "DELETE FROM car")
-	void findAll_車両が1件も無い場合は空リストを返す() {
-		List<Car> cars = carMapper.findAll();
-
-		assertThat(cars).isEmpty();
-	}
-
-	@Test
 	void search_条件なしの場合は全件を車両ID順にマッピングして返す() {
 		List<Car> cars = carMapper.search(new CarSearchForm());
 

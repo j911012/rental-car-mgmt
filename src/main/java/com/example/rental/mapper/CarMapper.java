@@ -10,8 +10,6 @@ import com.example.rental.form.CarSearchForm;
 @Mapper
 public interface CarMapper {
 
-	List<Car> findAll();
-
 	List<Car> search(CarSearchForm form);
 
 }
