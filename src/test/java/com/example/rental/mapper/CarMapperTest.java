@@ -105,4 +105,49 @@ class CarMapperTest {
 		assertThat(cars).isEmpty();
 	}
 
+	@Test
+	void insert_登録した内容が採番されたIDで取得できる() {
+		Car car = new Car();
+		car.setCarName("フィット");
+		car.setNumberPlate("品川500あ3456");
+		car.setStatus(CarStatus.MAINTENANCE);
+
+		carMapper.insert(car);
+
+		assertThat(car.getCarId()).isNotNull();
+		CarSearchForm form = new CarSearchForm();
+		form.setCarName("フィット");
+		assertThat(carMapper.search(form))
+				.singleElement()
+				.satisfies(inserted -> {
+					assertThat(inserted.getCarId()).isEqualTo(car.getCarId());
+					assertThat(inserted.getCarName()).isEqualTo("フィット");
+					assertThat(inserted.getNumberPlate()).isEqualTo("品川500あ3456");
+					assertThat(inserted.getStatus()).isEqualTo(CarStatus.MAINTENANCE);
+					// created_at / updated_at はDBのDEFAULTで入るため、SQLに書かなくても設定される
+					assertThat(inserted.getCreatedAt()).isNotNull();
+					assertThat(inserted.getUpdatedAt()).isNotNull();
+				});
+	}
+
+	@Test
+	void countByNumberPlate_同じナンバーが存在すれば1を返す() {
+		assertThat(carMapper.countByNumberPlate("品川500あ1234", null)).isEqualTo(1);
+	}
+
+	@Test
+	void countByNumberPlate_存在しないナンバーなら0を返す() {
+		assertThat(carMapper.countByNumberPlate("品川500あ9999", null)).isZero();
+	}
+
+	@Test
+	void countByNumberPlate_自レコードを除外すると0を返す() {
+		assertThat(carMapper.countByNumberPlate("品川500あ1234", 9901)).isZero();
+	}
+
+	@Test
+	void countByNumberPlate_他レコードを除外しても1を返す() {
+		assertThat(carMapper.countByNumberPlate("品川500あ1234", 9902)).isEqualTo(1);
+	}
+
 }

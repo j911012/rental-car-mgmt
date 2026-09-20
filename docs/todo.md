@@ -276,7 +276,7 @@
 
 ### 登録(CarRegist)
 
-- [ ] 4. **Mapper: 登録用SQL + テスト**
+- [x] 4. **Mapper: 登録用SQL + テスト**
       `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
       - `insert(Car)`(`useGeneratedKeys`で採番IDを受け取る)、`countByNumberPlate(@Param numberPlate, @Param excludeCarId)`
       - テスト: insertした内容が取得できる / ナンバー重複の件数(除外なし・自分を除外)

@@ -24,4 +24,19 @@
         ORDER BY car_id
     </select>
 
+    <insert id="insert" parameterType="com.example.rental.entity.Car"
+            useGeneratedKeys="true" keyProperty="carId">
+        INSERT INTO car (car_name, number_plate, status)
+        VALUES (#{carName}, #{numberPlate}, #{status})
+    </insert>
+
+    <select id="countByNumberPlate" resultType="int">
+        SELECT COUNT(*)
+        FROM car
+        WHERE number_plate = #{numberPlate}
+        <if test="excludeCarId != null">
+            AND car_id != #{excludeCarId}
+        </if>
+    </select>
+
 </mapper>

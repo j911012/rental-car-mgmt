@@ -103,7 +103,7 @@ com.example.rental
 | car_id       | INT         | PK, AUTO_INCREMENT |                                        |
 | car_name     | VARCHAR(50) | NOT NULL           | 車種名                                 |
 | number_plate | VARCHAR(20) | NOT NULL, UNIQUE   | ナンバー                               |
-| status       | VARCHAR(10) | NOT NULL           | `AVAILABLE` / `RENTED` / `MAINTENANCE` |
+| status       | VARCHAR(20) | NOT NULL           | `AVAILABLE` / `RENTED` / `MAINTENANCE` |
 | created_at   | DATETIME    | NOT NULL           |                                        |
 | updated_at   | DATETIME    | NOT NULL           |                                        |
 
