@@ -265,11 +265,11 @@
       `pom.xml`
       - `spring-boot-starter-validation`を追加し、全テストが通ることを確認
 
-- [ ] 2. **carテーブルの日時カラムの定義を確認**
+- [x] 2. **carテーブルの日時カラムの定義を確認**
       - `rental` / `rental_test` の**両方**で、`created_at`に`DEFAULT CURRENT_TIMESTAMP`、`updated_at`に`DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`が付いているかを`SHOW CREATE TABLE car`で確認する
       - 付いていない場合は、INSERT/UPDATE文に日時を書くか、テーブル定義を直すかをここで判断する(以降の項目の前提になる)
 
-- [ ] 3. **CarForm・BusinessException・選択可能ステータスを作成**
+- [x] 3. **CarForm・BusinessException・選択可能ステータスを作成**
       `src/main/java/com/example/rental/form/CarForm.java`(新規) / `src/main/java/com/example/rental/exception/BusinessException.java`(新規、パッケージ新設) / `src/main/java/com/example/rental/entity/CarStatus.java`
       - `CarStatus`に`selectableValues()`を追加(AVAILABLE / MAINTENANCE のみ)
       - `BusinessException`はエラー対象の項目名(null可)とメッセージキーを持つ
