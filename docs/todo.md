@@ -22,45 +22,45 @@
 ## TODOリスト
 
 - [x] 1. **MyBatis設定を追加**(既存ファイル変更)
-      `src/main/resources/application.properties`
-      - `mybatis.configuration.map-underscore-to-camel-case=true` を追加(スネークケース列↔キャメルケースプロパティの自動マッピングのため)
+     `src/main/resources/application.properties`
+     - `mybatis.configuration.map-underscore-to-camel-case=true` を追加(スネークケース列↔キャメルケースプロパティの自動マッピングのため)
 
 - [x] 2. **Mapperの登録方式を決定**
-      - 当初は`config/MyBatisConfig.java`に`@MapperScan`を切り出していたが、step3で`@MybatisTest`のスライスからも除外されBeanが解決できないことが判明
-      - 最終的に**Mapperインターフェースに`@Mapper`を付ける方式**に変更し、`MyBatisConfig`は削除(MyBatisの自動設定が`@Mapper`を検出するため、アプリ実行時・`@MybatisTest`の双方で動作する)
+     - 当初は`config/MyBatisConfig.java`に`@MapperScan`を切り出していたが、step3で`@MybatisTest`のスライスからも除外されBeanが解決できないことが判明
+     - 最終的に**Mapperインターフェースに`@Mapper`を付ける方式**に変更し、`MyBatisConfig`は削除(MyBatisの自動設定が`@Mapper`を検出するため、アプリ実行時・`@MybatisTest`の双方で動作する)
 
 - [x] 3. **Entity作成**
-      `src/main/java/com/example/rental/entity/Car.java`
-      - `carId(Integer)` / `carName(String)` / `numberPlate(String)` / `status(String)` / `createdAt(LocalDateTime)` / `updatedAt(LocalDateTime)`
-      - Lombokの`@Data`を付け、getter/setterは手書きしない
+     `src/main/java/com/example/rental/entity/Car.java`
+     - `carId(Integer)` / `carName(String)` / `numberPlate(String)` / `status(String)` / `createdAt(LocalDateTime)` / `updatedAt(LocalDateTime)`
+     - Lombokの`@Data`を付け、getter/setterは手書きしない
 
 - [x] 4. **Mapper interface作成**
-      `src/main/java/com/example/rental/mapper/CarMapper.java`
-      - `@Mapper`を付け、`List<Car> findAll();` のみ(条件なし全件取得)
+     `src/main/java/com/example/rental/mapper/CarMapper.java`
+     - `@Mapper`を付け、`List<Car> findAll();` のみ(条件なし全件取得)
 
 - [x] 5. **Mapper XML作成**
-      `src/main/resources/mapper/CarMapper.xml`
-      - namespace: `com.example.rental.mapper.CarMapper`
-      - `findAll` は単純な `SELECT ... FROM car`(`<if>`/`<where>`は使わない)
+     `src/main/resources/mapper/CarMapper.xml`
+     - namespace: `com.example.rental.mapper.CarMapper`
+     - `findAll` は単純な `SELECT ... FROM car`(`<if>`/`<where>`は使わない)
 
 - [x] 6. **Service作成**
-      `src/main/java/com/example/rental/service/CarService.java`
-      - `@Service` + `@RequiredArgsConstructor`、`private final CarMapper`でコンストラクタインジェクション
-      - `findAll()`が`carMapper.findAll()`をそのまま返す
+     `src/main/java/com/example/rental/service/CarService.java`
+     - `@Service` + `@RequiredArgsConstructor`、`private final CarMapper`でコンストラクタインジェクション
+     - `findAll()`が`carMapper.findAll()`をそのまま返す
 
 - [x] 7. **Serviceテスト作成**
-      `src/test/java/com/example/rental/service/CarServiceTest.java`
-      - Mockitoで`CarMapper`をモック化し、`findAll()`がモックの戻り値をそのまま返すことのみ検証
+     `src/test/java/com/example/rental/service/CarServiceTest.java`
+     - Mockitoで`CarMapper`をモック化し、`findAll()`がモックの戻り値をそのまま返すことのみ検証
 
 - [x] 8. **Controller作成**
-      `src/main/java/com/example/rental/controller/CarListController.java`
-      - `@Controller`、`@GetMapping("/cars")`
-      - `@RequiredArgsConstructor`で`CarService`をコンストラクタインジェクション、結果をModel属性(`carList`)に詰めてビュー名`"car/list"`を返す
+     `src/main/java/com/example/rental/controller/CarListController.java`
+     - `@Controller`、`@GetMapping("/cars")`
+     - `@RequiredArgsConstructor`で`CarService`をコンストラクタインジェクション、結果をModel属性(`carList`)に詰めてビュー名`"car/list"`を返す
 
 - [x] 9. **Controllerテスト作成**
-      `src/test/java/com/example/rental/controller/CarListControllerTest.java`
-      - `@WebMvcTest(CarListController.class)` + `@MockitoBean CarService`
-      - 検証: ステータス200、ビュー名`car/list`、Model属性`carList`の存在
+     `src/test/java/com/example/rental/controller/CarListControllerTest.java`
+     - `@WebMvcTest(CarListController.class)` + `@MockitoBean CarService`
+     - 検証: ステータス200、ビュー名`car/list`、Model属性`carList`の存在
 
 - [x] 10. **messages.properties作成**
       `src/main/resources/messages.properties`
@@ -104,25 +104,25 @@
 ## TODOリスト
 
 - [x] 1. **テスト用DB接続設定を追加**(新規ファイル)
-      `src/test/resources/application.properties`
-      - `spring.datasource.url=jdbc:mysql://localhost:3306/rental_test`(username/password/driver-class-nameは本番と同じ値)
-      - `mybatis.mapper-locations=classpath:mapper/*.xml`
-      - `mybatis.configuration.map-underscore-to-camel-case=true`
-      - ※テスト用クラスパスの`application.properties`は本番設定を完全に置き換える(マージされない)ため、必要な設定を漏れなく複製する
+     `src/test/resources/application.properties`
+     - `spring.datasource.url=jdbc:mysql://localhost:3306/rental_test`(username/password/driver-class-nameは本番と同じ値)
+     - `mybatis.mapper-locations=classpath:mapper/*.xml`
+     - `mybatis.configuration.map-underscore-to-camel-case=true`
+     - ※テスト用クラスパスの`application.properties`は本番設定を完全に置き換える(マージされない)ため、必要な設定を漏れなく複製する
 
 - [x] 2. **CarMapperTest作成**
-      `src/test/java/com/example/rental/mapper/CarMapperTest.java`
-      - `@MybatisTest` + `@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)`(H2等への自動差し替えを無効化し、`rental_test`に接続させる)
-      - `@Autowired CarMapper carMapper`
-      - `@Sql(statements = {...})` で2件のcarデータを事前投入(`car_id`は既存データと衝突しない値を明示的に指定)。先頭に`DELETE FROM car`を入れてテーブルの状態に依存しないようにする
-      - `carMapper.findAll()` の戻り値の各カラム(`carId`/`carName`/`numberPlate`/`status`/`createdAt`/`updatedAt`)のマッピングをAssertJで検証(`containsExactlyInAnyOrder`で順序に依存しない比較)
-      - 0件の場合に空リストを返すことも検証
-      - `@MybatisTest`はデフォルトで`@Transactional`のため後片付けのDELETEは不要
-      - ※`@MapperScan`を`MyBatisConfig`に切り出していたため`@MybatisTest`のスライスから除外されBeanが見つからなかった。`CarMapper`に`@Mapper`を付けて`MyBatisConfig`を削除する方式に変更(実装中に判明)
+     `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+     - `@MybatisTest` + `@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)`(H2等への自動差し替えを無効化し、`rental_test`に接続させる)
+     - `@Autowired CarMapper carMapper`
+     - `@Sql(statements = {...})` で2件のcarデータを事前投入(`car_id`は既存データと衝突しない値を明示的に指定)。先頭に`DELETE FROM car`を入れてテーブルの状態に依存しないようにする
+     - `carMapper.findAll()` の戻り値の各カラム(`carId`/`carName`/`numberPlate`/`status`/`createdAt`/`updatedAt`)のマッピングをAssertJで検証(`containsExactlyInAnyOrder`で順序に依存しない比較)
+     - 0件の場合に空リストを返すことも検証
+     - `@MybatisTest`はデフォルトで`@Transactional`のため後片付けのDELETEは不要
+     - ※`@MapperScan`を`MyBatisConfig`に切り出していたため`@MybatisTest`のスライスから除外されBeanが見つからなかった。`CarMapper`に`@Mapper`を付けて`MyBatisConfig`を削除する方式に変更(実装中に判明)
 
 - [x] 3. **テスト実行・確認**
-      - `CarMapperTest`を実行してGreenになることを確認
-      - 既存の`CarServiceTest`/`CarListControllerTest`/`RentalCarMgmtApplicationTests`にも影響がないか確認(手順1の追加が既存テストに影響しないか)
+     - `CarMapperTest`を実行してGreenになることを確認
+     - 既存の`CarServiceTest`/`CarListControllerTest`/`RentalCarMgmtApplicationTests`にも影響がないか確認(手順1の追加が既存テストに影響しないか)
 
 ## 検証方法
 
@@ -156,50 +156,50 @@
 ## TODOリスト(各項目の完了時点で全テストGreenを保てる順序)
 
 - [x] 1. **CarStatus enum作成と`Car.status`の型変更**
-      `src/main/java/com/example/rental/entity/CarStatus.java`(新規) / `src/main/java/com/example/rental/entity/Car.java`
-      - `Car.status`を`String`から`CarStatus`に変更
-      - 既存テスト3件を追従: `CarMapperTest`(期待値を`CarStatus.AVAILABLE`等に)、`CarServiceTest`・`CarListControllerTest`(`setStatus(CarStatus.AVAILABLE)`)
-      - MyBatisは標準の`EnumTypeHandler`がVARCHAR↔enum名を変換するため設定追加は不要(テスト実行で確認)
-      - ※Entityの型変更のため、既存テストの修正も同じコミットに含めないとコンパイルが通らない
+     `src/main/java/com/example/rental/entity/CarStatus.java`(新規) / `src/main/java/com/example/rental/entity/Car.java`
+     - `Car.status`を`String`から`CarStatus`に変更
+     - 既存テスト3件を追従: `CarMapperTest`(期待値を`CarStatus.AVAILABLE`等に)、`CarServiceTest`・`CarListControllerTest`(`setStatus(CarStatus.AVAILABLE)`)
+     - MyBatisは標準の`EnumTypeHandler`がVARCHAR↔enum名を変換するため設定追加は不要(テスト実行で確認)
+     - ※Entityの型変更のため、既存テストの修正も同じコミットに含めないとコンパイルが通らない
 
 - [x] 2. **CarSearchForm作成**
-      `src/main/java/com/example/rental/form/CarSearchForm.java`(新規、`form`パッケージ新設)
-      - `@Data`、フィールド `carName`(String) / `status`(CarStatus)
+     `src/main/java/com/example/rental/form/CarSearchForm.java`(新規、`form`パッケージ新設)
+     - `@Data`、フィールド `carName`(String) / `status`(CarStatus)
 
 - [x] 3. **Mapperに動的SQLの`search`を追加 + Mapperテスト**
-      `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
-      - `List<Car> search(CarSearchForm form);` を追加(この時点では`findAll`も残し、Service/Controllerを壊さない)
-      - XMLは`<where>`の中に以下を置く
-        - `<if test="carName != null and carName != ''">AND car_name LIKE CONCAT('%', #{carName}, '%')</if>`
-        - `<if test="status != null">AND status = #{status}</if>`
-      - `ORDER BY car_id` を付けて一覧の並びを安定させる
-      - `@Sql`で車種名・ステータスが異なる3件程度を投入し、以下を検証
-        - 条件なし(全件) / 車種名のみ(部分一致) / ステータスのみ / 両方指定 / 車種名が空文字(条件から除外される) / 該当0件
+     `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+     - `List<Car> search(CarSearchForm form);` を追加(この時点では`findAll`も残し、Service/Controllerを壊さない)
+     - XMLは`<where>`の中に以下を置く
+       - `<if test="carName != null and carName != ''">AND car_name LIKE CONCAT('%', #{carName}, '%')</if>`
+       - `<if test="status != null">AND status = #{status}</if>`
+     - `ORDER BY car_id` を付けて一覧の並びを安定させる
+     - `@Sql`で車種名・ステータスが異なる3件程度を投入し、以下を検証
+       - 条件なし(全件) / 車種名のみ(部分一致) / ステータスのみ / 両方指定 / 車種名が空文字(条件から除外される) / 該当0件
 
 - [x] 4. **Serviceを`search`に切り替え + テスト**
-      `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
-      - `findAll()` → `search(CarSearchForm form)`(Mapperへ委譲)
-      - 受け取ったFormをそのままMapperに渡し、結果を返すことを検証
-      - ※Controllerが`findAll()`を呼んでいるため、この項目ではControllerの呼び出しも`search(new CarSearchForm())`等へ最小限追従させる(本格対応は項目5)
+     `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
+     - `findAll()` → `search(CarSearchForm form)`(Mapperへ委譲)
+     - 受け取ったFormをそのままMapperに渡し、結果を返すことを検証
+     - ※Controllerが`findAll()`を呼んでいるため、この項目ではControllerの呼び出しも`search(new CarSearchForm())`等へ最小限追従させる(本格対応は項目5)
 
 - [x] 5. **Controller・画面・文言を検索対応 + テスト**
-      `src/main/java/com/example/rental/controller/CarListController.java` / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarListControllerTest.java`
-      - Controller: `list(@ModelAttribute CarSearchForm carSearchForm, Model model)`
-        - `carList`に`carService.search(carSearchForm)`の結果、`statusList`に`CarStatus.values()`を詰める
-      - テンプレート: 一覧テーブルの上にGETの検索フォームを追加
-        - `th:object="${carSearchForm}"`、車種名は`th:field="*{carName}"`のテキスト、ステータスは`th:field="*{status}"`の`<select>`(先頭に未選択の空option、選択肢は`statusList`)、検索ボタン
-      - messages.properties: `carList.searchCarName` / `carList.searchStatus` / `carList.statusUnselected`(未選択の表示) / `common.search`(検索ボタン。貸出一覧でも使うため`common.`)
-      - Controllerテスト
-        - 条件なしのGETで、ビュー名・`carList`・`statusList`・`carSearchForm`がModelにあること
-        - `?carName=プリ&status=RENTED`のGETで、Serviceに渡ったFormに値がバインドされていること(`ArgumentCaptor`で検証)
+     `src/main/java/com/example/rental/controller/CarListController.java` / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarListControllerTest.java`
+     - Controller: `list(@ModelAttribute CarSearchForm carSearchForm, Model model)`
+       - `carList`に`carService.search(carSearchForm)`の結果、`statusList`に`CarStatus.values()`を詰める
+     - テンプレート: 一覧テーブルの上にGETの検索フォームを追加
+       - `th:object="${carSearchForm}"`、車種名は`th:field="*{carName}"`のテキスト、ステータスは`th:field="*{status}"`の`<select>`(先頭に未選択の空option、選択肢は`statusList`)、検索ボタン
+     - messages.properties: `carList.searchCarName` / `carList.searchStatus` / `carList.statusUnselected`(未選択の表示) / `common.search`(検索ボタン。貸出一覧でも使うため`common.`)
+     - Controllerテスト
+       - 条件なしのGETで、ビュー名・`carList`・`statusList`・`carSearchForm`がModelにあること
+       - `?carName=プリ&status=RENTED`のGETで、Serviceに渡ったFormに値がバインドされていること(`ArgumentCaptor`で検証)
 
 - [x] 6. **不要になった`findAll`を削除**
-      `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
-      - Mapperの`findAll`とそのテストを削除(項目3の「条件なし」「0件」ケースで代替済み)
+     `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+     - Mapperの`findAll`とそのテストを削除(項目3の「条件なし」「0件」ケースで代替済み)
 
 - [x] 7. **テスト実行と手動確認**
-      - `./mvnw test` で全テストGreen
-      - アプリ起動 → `http://localhost:8080/cars` で、未入力・車種名のみ・ステータスのみ・両方の検索が期待通り動くことを目視確認
+     - `./mvnw test` で全テストGreen
+     - アプリ起動 → `http://localhost:8080/cars` で、未入力・車種名のみ・ステータスのみ・両方の検索が期待通り動くことを目視確認
 
 ## 把握しておくリスク・注意点
 
@@ -262,114 +262,184 @@
 ### 共通の準備
 
 - [x] 1. **バリデーション依存を追加**
-      `pom.xml`
-      - `spring-boot-starter-validation`を追加し、全テストが通ることを確認
+     `pom.xml`
+     - `spring-boot-starter-validation`を追加し、全テストが通ることを確認
 
 - [x] 2. **carテーブルの日時カラムの定義を確認**
-      - `rental` / `rental_test` の**両方**で、`created_at`に`DEFAULT CURRENT_TIMESTAMP`、`updated_at`に`DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`が付いているかを`SHOW CREATE TABLE car`で確認する
-      - 付いていない場合は、INSERT/UPDATE文に日時を書くか、テーブル定義を直すかをここで判断する(以降の項目の前提になる)
+     - `rental` / `rental_test` の**両方**で、`created_at`に`DEFAULT CURRENT_TIMESTAMP`、`updated_at`に`DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`が付いているかを`SHOW CREATE TABLE car`で確認する
+     - 付いていない場合は、INSERT/UPDATE文に日時を書くか、テーブル定義を直すかをここで判断する(以降の項目の前提になる)
 
 - [x] 3. **CarForm・BusinessException・選択可能ステータスを作成**
-      `src/main/java/com/example/rental/form/CarForm.java`(新規) / `src/main/java/com/example/rental/exception/BusinessException.java`(新規、パッケージ新設) / `src/main/java/com/example/rental/entity/CarStatus.java`
-      - `CarStatus`に`selectableValues()`を追加(AVAILABLE / MAINTENANCE のみ)
-      - `BusinessException`はエラー対象の項目名(null可)とメッセージキーを持つ
+     `src/main/java/com/example/rental/form/CarForm.java`(新規) / `src/main/java/com/example/rental/exception/BusinessException.java`(新規、パッケージ新設) / `src/main/java/com/example/rental/entity/CarStatus.java`
+     - `CarStatus`に`selectableValues()`を追加(AVAILABLE / MAINTENANCE のみ)
+     - `BusinessException`はエラー対象の項目名(null可)とメッセージキーを持つ
 
 ### 登録(CarRegist)
 
 - [x] 4. **Mapper: 登録用SQL + テスト**
-      `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
-      - `insert(Car)`(`useGeneratedKeys`で採番IDを受け取る)、`countByNumberPlate(@Param numberPlate, @Param excludeCarId)`
-      - テスト: insertした内容が取得できる / ナンバー重複の件数(除外なし・自分を除外)
+     `src/main/java/com/example/rental/mapper/CarMapper.java` / `src/main/resources/mapper/CarMapper.xml` / `src/test/java/com/example/rental/mapper/CarMapperTest.java`
+     - `insert(Car)`(`useGeneratedKeys`で採番IDを受け取る)、`countByNumberPlate(@Param numberPlate, @Param excludeCarId)`
+     - テスト: insertした内容が取得できる / ナンバー重複の件数(除外なし・自分を除外)
 
 - [x] 5. **Service: 登録 + テスト**
-      `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
-      - `regist(CarForm)`
-      - テスト: 重複で例外かつinsertされない / RENTEDで例外 / 正常時insertが呼ばれる
+     `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
+     - `regist(CarForm)`
+     - テスト: 重複で例外かつinsertされない / RENTEDで例外 / 正常時insertが呼ばれる
 
 - [x] 6. **Controller・画面・文言: 登録 + テスト**
-      `src/main/java/com/example/rental/controller/CarRegistController.java`(新規) / `src/main/resources/templates/car/regist.html`(新規) / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarRegistControllerTest.java`(新規)
-      - `GET /cars/new` → `car/regist`、`POST /cars/new` → バリデーションエラー・業務エラーは`car/regist`に戻す、成功は`redirect:/cars`+Flash完了メッセージ
-      - ステータスの選択肢は`@ModelAttribute("statusList")`メソッドで載せる
-      - 画面: 車種名・ナンバー・ステータスの入力、項目ごとの`th:errors`、グローバルエラーの表示欄
-      - 一覧: 新規登録ボタンとFlashメッセージの表示欄を追加
-      - 文言: `carRegist.*`、`common.regist`、バリデーションメッセージ、業務エラーメッセージ、完了メッセージ
-      - テスト
-        - 画面表示 / 選択肢にRENTEDが含まれない
-        - 入力エラーで`car/regist`に戻る(リダイレクトしない)。**このとき選択肢もModelに入っている**
-        - 業務エラーで`car/regist`に戻る。**このとき選択肢もModelに入っている**
-        - 成功で`/cars`へリダイレクトしFlashに完了メッセージ
+     `src/main/java/com/example/rental/controller/CarRegistController.java`(新規) / `src/main/resources/templates/car/regist.html`(新規) / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarRegistControllerTest.java`(新規)
+     - `GET /cars/new` → `car/regist`、`POST /cars/new` → バリデーションエラー・業務エラーは`car/regist`に戻す、成功は`redirect:/cars`+Flash完了メッセージ
+     - ステータスの選択肢は`@ModelAttribute("statusList")`メソッドで載せる
+     - 画面: 車種名・ナンバー・ステータスの入力、項目ごとの`th:errors`、グローバルエラーの表示欄
+     - 一覧: 新規登録ボタンとFlashメッセージの表示欄を追加
+     - 文言: `carRegist.*`、`common.regist`、バリデーションメッセージ、業務エラーメッセージ、完了メッセージ
+     - テスト
+       - 画面表示 / 選択肢にRENTEDが含まれない
+       - 入力エラーで`car/regist`に戻る(リダイレクトしない)。**このとき選択肢もModelに入っている**
+       - 業務エラーで`car/regist`に戻る。**このとき選択肢もModelに入っている**
+       - 成功で`/cars`へリダイレクトしFlashに完了メッセージ
 
 > **ここで止まってレビューを待つ**
 
-### 編集(CarEdit)
+# TODO: 8章 step5(組み直し版)
 
-- [ ] 7. **Mapper: 編集用SQL + テスト**
-      `CarMapper.java` / `CarMapper.xml` / `CarMapperTest.java`
-      - `findById(carId)`、`update(Car)`
-      - テスト: 取得・存在しないIDでnull・更新内容の反映
+登録(項目1〜6)は完了済みのため、そのまま残す。
+**編集・削除は「画面から見える小さな単位で、全レイヤーを縦に1本ずつ通す」順番に組み直す。**
 
-- [ ] 8. **Service: 取得・更新 + テスト**
-      `CarService.java` / `CarServiceTest.java`
-      - `findById(carId)`、`update(carId, CarForm)`
-      - テスト
-        - 自分を除いた重複チェック
+## 組み直しの理由
+
+- 旧TODOは Mapper → Service → Controller の「下から積む」順番だった。作業としては安全だが、部品が何に使われるのか最後まで見えず、学習には向かなかった
+- 今後は、各項目の完了時点で **画面かテストで動きが見える** ことを優先する
+- 各項目で「全テストGreen」は引き続き守る。テストはその項目の中で書く(後回しにしない)
+
+## 進め方のルール(学習モード)
+
+- 各項目は **ヒント → 自分で実装 → レビュー → 説明できるか確認** の順で進める
+- Claude Code は実装コードを書かない。ヒントとレビューのみ(本人が「答えを見せて」と言ったときだけコードを示す)
+- 各項目の「確認ポイント」に自分の言葉で答えられたら、チェックを付けて次へ進む
+
+---
+
+## 0. 登録の理解を固める(新規コードなし)
+
+- [ ] 0-a. **登録を動かして観察する** - 正常登録 / 車種名を空で送信 / 既存ナンバーで送信 / (curl等で)status=RENTED を送信 - それぞれ画面に何が出たかをメモする
+- [ ] 0-b. **1回の登録リクエストを追いかける** - ボタン押下 → `CarRegistController` → `CarService.regist` → `CarMapper.insert` → リダイレクト → 一覧、を実際のファイルを開きながら順に追う - ナンバー重複のときに、`BusinessException` がどこで投げられ、どこで捕まり、どの行で画面の赤字になるかを特定する
+- [ ] 0-c. **壊して観察する**(1つずつ試して元に戻す) - `@ModelAttribute("statusList")` を消す → 入力エラー時のプルダウンはどうなるか - `catch (BusinessException e)` を消す → ナンバー重複時の画面はどうなるか - `regist.html` の `th:errors` を1つ消す → 何が起きるか - 実行前に結果を予想し、予想と実際の差をメモする
+
+確認ポイント:
+
+- `BusinessException` を投げてから画面に赤字が出るまでに通るファイルを、順番に3つ以上言える
+- `rejectValue` と `reject` の違いを一言で言える
+- 入力チェック(`@NotBlank` 等)と業務チェック(`BusinessException`)が、それぞれどの層で行われているか言える
+
+> **ここで止まってレビューを待つ**
+
+---
+
+## 編集(CarEdit)
+
+- [ ] 7. **編集画面を開くだけ(値はまだ出さない)**
+     `CarEditController.java`(新規) / `templates/car/edit.html`(新規) / `templates/car/list.html` / `messages.properties` / `CarEditControllerTest.java`(新規)
+     - `GET /cars/{carId}/edit` → `car/edit` を返すだけ。画面にはタイトルと、受け取った `carId` を表示する
+     - 一覧の各行に編集リンクを追加
+     - テスト: ビュー名が `car/edit` になる
+       確認ポイント: URLの `{carId}` が、どうやってControllerの引数に届いたか
+
+- [ ] 8. **既存の値を表示する(1台取得を縦に通す)**
+     `CarMapper.java/.xml` / `CarMapperTest.java` / `CarService.java` / `CarServiceTest.java` / `CarEditController.java` / `edit.html` / `CarEditControllerTest.java`
+     - Mapper `findById(carId)`、Service `findById(carId)`
+     - Controller で `Car` を `CarForm` に詰め替えて Model に入れ、入力欄に初期表示する
+     - テスト: Mapper(取得できる / 存在しないIDで null)、Controller(Modelに既存値が入っている)
+       確認ポイント: 登録では空の `CarForm` を渡していたのに、編集では値入りの `CarForm` を渡す理由
+
+- [ ] 9. **存在しない車両IDで404にする**
+     `CarEditController.java` / `CarEditControllerTest.java`
+     - `findById` が null なら404
+     - テスト: 存在しないIDで404
+       確認ポイント: 404にせず放っておくと何が起きるか
+
+- [ ] 10. **保存する(チェックなし)**
+      `CarMapper.java/.xml` / `CarMapperTest.java` / `CarService.java` / `CarServiceTest.java` / `CarEditController.java` / `CarEditControllerTest.java` / `messages.properties`
+      - Mapper `update(Car)`、Service `update(carId, CarForm)`(詰め替えてupdateを呼ぶだけ)
+      - `POST /cars/{carId}/edit` → `redirect:/cars` + Flash完了メッセージ
+      - テスト: Mapper(更新内容が反映される)、Service(updateが呼ばれる)、Controller(リダイレクトとFlash)
+        確認ポイント: 登録の `insert` と比べて、SQLとJavaで何が違うか
+
+- [ ] 11. **入力チェックを付ける**
+      `CarEditController.java` / `edit.html` / `CarEditControllerTest.java`
+      - 登録と同じ `@Validated` + `BindingResult`。エラー時は `car/edit` に戻す
+      - ステータスの選択肢は `@ModelAttribute("statusList")` で載せる
+      - テスト: 入力エラーで `car/edit` に戻る(リダイレクトしない)、選択肢がModelに入っている
+        確認ポイント: 登録のコードを見ずに書けたか。見た場合、どこを見たか
+
+- [ ] 12. **ナンバー重複チェック(自分を除く)**
+      `CarService.java` / `CarServiceTest.java` / `CarEditController.java` / `CarEditControllerTest.java`
+      - Service で `countByNumberPlate(numberPlate, carId)` を使う
+      - Controller で `BusinessException` を捕まえて `car/edit` に戻す
+      - テスト: Service(他の車と重複で例外かつupdateされない / 自分のナンバーのままなら更新できる)、Controller(業務エラーで `car/edit` に戻る)
+        確認ポイント: 登録では第2引数に null を渡した。編集で carId を渡す理由
+
+- [ ] 13. **貸出中(RENTED)のルール**
+      `CarService.java` / `CarServiceTest.java` / `edit.html` / `messages.properties`
+      - Service: 現在RENTEDなのにステータスを変える→例外 / RENTED以外からRENTEDにする→例外
+      - 画面: 貸出中の車両はステータスをプルダウンではなく文字で表示し、値は hidden で送る
+      - テスト(Service)
         - 貸出中のステータス変更で例外かつupdateされない
-        - **貸出中(RENTED)の車両でも、ステータスを変えなければ車種名・ナンバーは更新できる**
         - RENTEDへの変更で例外
-        - 正常時updateが呼ばれる
+        - **貸出中でも、ステータスを変えなければ車種名・ナンバーは更新できる**
+      - 手動確認: DBeaverで対象車両の status を `RENTED` に書き換えてから編集画面を開く
+        確認ポイント: hidden にせず `disabled` にすると何が起きるか
 
-- [ ] 9. **Controller・画面・文言: 編集 + テスト**
-      `src/main/java/com/example/rental/controller/CarEditController.java`(新規) / `src/main/resources/templates/car/edit.html`(新規) / `templates/car/list.html` / `messages.properties` / `src/test/java/com/example/rental/controller/CarEditControllerTest.java`(新規)
-      - `GET /cars/{carId}/edit`(存在しなければ404) → `car/edit`、`POST /cars/{carId}/edit` → 登録と同じ分岐
-      - ステータスの選択肢は登録と同じく`@ModelAttribute`メソッドで載せる
-      - 画面: 既存値を初期表示、項目ごとの`th:errors`とグローバルエラーの表示欄。貸出中の車両はステータスを変更不可の表示にし、値はhiddenで送る
-      - 一覧: 各行に編集リンク
-      - 文言: `carEdit.*`、`common.edit`、完了メッセージ
-      - テスト: 既存値つき表示 / 存在しないIDで404 / 入力エラー・業務エラーで`car/edit`に戻る(選択肢もModelに入っている) / 成功でリダイレクト+Flash
-
-> **ここで止まってレビューを待つ**
-
-### 削除
-
-- [ ] 10. **Mapper: 削除用SQL + テスト**
-      `CarMapper.java` / `CarMapper.xml` / `CarMapperTest.java`
-      - `countReservationsByCarId(carId)`、`deleteById(carId)`
-      - テスト: 貸出履歴の件数・削除の反映
-      - テストで`reservation`/`customer`に行を入れるため、クラスの`@Sql`のDELETEを**`reservation` → `customer` → `car`の順**にする(外部キーの参照先を後に消す)
-
-- [ ] 11. **Service: 削除 + テスト**
-      `CarService.java` / `CarServiceTest.java`
-      - `delete(carId)`
-      - テスト: 貸出履歴ありで例外かつ削除されない / 履歴なしで削除が呼ばれる
-
-- [ ] 12. **Controller・画面・文言: 削除 + テスト**
-      `src/main/java/com/example/rental/controller/CarListController.java` / `templates/car/list.html` / `messages.properties` / `src/test/java/com/example/rental/controller/CarListControllerTest.java`
-      - `POST /cars/{carId}/delete`: 成功も失敗も`redirect:/cars`、Flashに完了またはエラーメッセージ
-      - 一覧: 各行に削除ボタン(POSTのform)
-      - 文言: `common.delete`、完了・エラーメッセージ
-      - テスト: 削除成功・履歴ありの両方でリダイレクトとFlashの内容
+- [ ] 14. **更新対象が見つからないとき(グローバルエラー)**
+      `CarService.java` / `CarServiceTest.java` / `CarEditController.java` / `edit.html`
+      - Service: 更新前に対象が無ければ `BusinessException(messageKey)`(field なし)
+      - Controller: field が null なら `reject`。画面にグローバルエラーの表示欄
+      - テスト: Service(対象なしで例外)
+        確認ポイント: この場合に `rejectValue` を使うと何が起きるか
 
 > **ここで止まってレビューを待つ**
 
-### 仕上げ
+---
 
-- [ ] 13. **ドキュメントの追記**
-      `CLAUDE.md` / `docs/requirements.md`
-      - `CLAUDE.md`: 命名規則に削除URL(`POST /cars/{carId}/delete`、`CarListController`)を追加、パッケージ構成に`exception`を追加
-      - `docs/requirements.md` 4章の対応表: 削除のURLと担当Controllerの行を追加
-      - `docs/requirements.md` 6-3 / 6-4: 登録・編集画面でRENTEDを選べないこと、存在しない車両IDで404にすることを追記
+## 削除
 
-- [ ] 14. **テスト実行と手動確認**
-      - `./mvnw test`で全テストGreen
-      - アプリ起動 → 登録(正常・入力エラー・ナンバー重複)、編集(正常・重複・自分のナンバーのまま保存)、削除(正常)を画面で確認
+- [ ] 15. **削除ボタンを押すと一覧に戻る(削除はまだしない)**
+      `CarListController.java` / `list.html` / `messages.properties` / `CarListControllerTest.java`
+      - 各行に削除ボタン(POSTの form)。`POST /cars/{carId}/delete` → `redirect:/cars`
+      - テスト: リダイレクトされる
+        確認ポイント: 削除をリンク(GET)ではなくボタン(POST)にする理由
+
+- [ ] 16. **実際に削除する**
+      `CarMapper.java/.xml` / `CarMapperTest.java` / `CarService.java` / `CarServiceTest.java` / `CarListController.java` / `CarListControllerTest.java`
+      - Mapper `deleteById(carId)`、Service `delete(carId)`、Flashに完了メッセージ
+      - テスト: Mapper(削除が反映される)、Service(deleteが呼ばれる)、Controller(Flashの内容)
+        確認ポイント: 登録・編集と違い、削除は `BindingResult` を使わない理由
+
+- [ ] 17. **貸出履歴があれば削除できない**
+      `CarMapper.java/.xml` / `CarMapperTest.java` / `CarService.java` / `CarServiceTest.java` / `CarListController.java` / `CarListControllerTest.java`
+      - Mapper `countReservationsByCarId(carId)`
+      - Service: 1件以上なら例外(deleteは呼ばない)
+      - Controller: 例外を捕まえて、Flashでエラーメッセージを渡して一覧へ
+      - `CarMapperTest` の `@Sql` の DELETE を `reservation` → `customer` → `car` の順にする
+      - テスト: Mapper(件数)、Service(履歴ありで例外かつ削除されない)、Controller(エラー時のFlash)
+      - 手動確認: DBeaverで customer と reservation に1行ずつ入れてから削除を試す
+        確認ポイント: 入力画面が無い削除で、エラーをどうやって利用者に見せているか
+
+> **ここで止まってレビューを待つ**
+
+---
+
+## 仕上げ
+
+- [ ] 18. **ドキュメントの追記**
+      - `CLAUDE.md`: 削除URL(`POST /cars/{carId}/delete`、`CarListController`)、パッケージ構成に `exception`、業務エラーのメッセージキーは `フォーム名.項目名.エラー内容`
+      - `docs/requirements.md` 4章の対応表に削除の行、6-3/6-4 に「RENTEDは手動で選べない」「存在しない車両IDは404」
+
+- [ ] 19. **全体確認**
+      - `./mvnw test` で全テストGreen
+      - 登録・編集・削除を画面で一通り確認
 
 ## 把握しておくリスク・注意点
 
-- DBの`number_plate`にもUNIQUE制約があるため、同時登録などでServiceのチェックをすり抜けても最終的にはDBエラーで弾かれる。今回その例外はハンドリングしない
-- 貸出中の車両・貸出履歴ありの削除は、step6の貸出登録ができるまで画面からは作れない。Service/Mapperのテストで確認し、手動確認は対象外
-- 削除時、外部キー制約でもDBエラーになるが、先にServiceでチェックするため通常は到達しない
-
-## 検証方法
-
-- 各項目の完了ごとに `./mvnw test` で全テストGreenを確認
-- 最後にアプリを起動して、登録・編集・削除を画面で確認
+- DBの `number_plate` のUNIQUE制約違反(同時登録など)は今回ハンドリングしない
+- 存在しないIDでの削除は0件削除になるだけで、今回は扱わない
