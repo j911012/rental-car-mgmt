@@ -286,7 +286,7 @@
       - `regist(CarForm)`
       - テスト: 重複で例外かつinsertされない / RENTEDで例外 / 正常時insertが呼ばれる
 
-- [ ] 6. **Controller・画面・文言: 登録 + テスト**
+- [x] 6. **Controller・画面・文言: 登録 + テスト**
       `src/main/java/com/example/rental/controller/CarRegistController.java`(新規) / `src/main/resources/templates/car/regist.html`(新規) / `src/main/resources/templates/car/list.html` / `src/main/resources/messages.properties` / `src/test/java/com/example/rental/controller/CarRegistControllerTest.java`(新規)
       - `GET /cars/new` → `car/regist`、`POST /cars/new` → バリデーションエラー・業務エラーは`car/regist`に戻す、成功は`redirect:/cars`+Flash完了メッセージ
       - ステータスの選択肢は`@ModelAttribute("statusList")`メソッドで載せる
