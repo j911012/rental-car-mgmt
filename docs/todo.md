@@ -281,7 +281,7 @@
       - `insert(Car)`(`useGeneratedKeys`で採番IDを受け取る)、`countByNumberPlate(@Param numberPlate, @Param excludeCarId)`
       - テスト: insertした内容が取得できる / ナンバー重複の件数(除外なし・自分を除外)
 
-- [ ] 5. **Service: 登録 + テスト**
+- [x] 5. **Service: 登録 + テスト**
       `src/main/java/com/example/rental/service/CarService.java` / `src/test/java/com/example/rental/service/CarServiceTest.java`
       - `regist(CarForm)`
       - テスト: 重複で例外かつinsertされない / RENTEDで例外 / 正常時insertが呼ばれる
