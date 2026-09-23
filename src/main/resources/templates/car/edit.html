@@ -1,0 +1,13 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <title th:text="#{carEdit.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+  </head>
+  <body>
+    <h1 th:text="#{carEdit.title}"></h1>
+    <p th:text="${carId}"></p>
+    <a th:href="@{/cars}" th:text="#{common.back}"></a>
+  </body>
+</html>

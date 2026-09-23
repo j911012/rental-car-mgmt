@@ -3,34 +3,51 @@
   <head>
     <meta charset="UTF-8" />
     <title th:text="#{carRegist.title}"></title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
   </head>
   <body>
     <h1 th:text="#{carRegist.title}"></h1>
 
     <form th:action="@{/cars/new}" th:object="${carForm}" method="post">
-      <ul th:if="${#fields.hasGlobalErrors()}">
+      <ul class="error" th:if="${#fields.hasGlobalErrors()}">
         <li th:each="err : ${#fields.globalErrors()}" th:text="${err}"></li>
       </ul>
 
       <div>
         <label for="carName" th:text="#{carRegist.carName}"></label>
         <input type="text" th:field="*{carName}" />
-        <span th:if="${#fields.hasErrors('carName')}" th:errors="*{carName}"></span>
+        <span
+          class="error"
+          th:if="${#fields.hasErrors('carName')}"
+          th:errors="*{carName}"
+        ></span>
       </div>
 
       <div>
         <label for="numberPlate" th:text="#{carRegist.numberPlate}"></label>
         <input type="text" th:field="*{numberPlate}" />
-        <span th:if="${#fields.hasErrors('numberPlate')}" th:errors="*{numberPlate}"></span>
+        <span
+          class="error"
+          th:if="${#fields.hasErrors('numberPlate')}"
+          th:errors="*{numberPlate}"
+        ></span>
       </div>
 
       <div>
         <label for="status" th:text="#{carRegist.status}"></label>
         <select th:field="*{status}">
           <option value="" th:text="#{carList.statusUnselected}"></option>
-          <option th:each="s : ${statusList}" th:value="${s}" th:text="${s}"></option>
+          <option
+            th:each="s : ${statusList}"
+            th:value="${s}"
+            th:text="${s}"
+          ></option>
         </select>
-        <span th:if="${#fields.hasErrors('status')}" th:errors="*{status}"></span>
+        <span
+          class="error"
+          th:if="${#fields.hasErrors('status')}"
+          th:errors="*{status}"
+        ></span>
       </div>
 
       <button type="submit" th:text="#{common.regist}"></button>
