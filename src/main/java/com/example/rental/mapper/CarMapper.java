@@ -17,4 +17,6 @@ public interface CarMapper {
 
 	int countByNumberPlate(@Param("numberPlate") String numberPlate, @Param("excludeCarId") Integer excludeCarId);
 
+	Car findById(Integer carId);
+
 }

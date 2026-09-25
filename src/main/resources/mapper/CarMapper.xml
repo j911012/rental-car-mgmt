@@ -39,4 +39,16 @@
         </if>
     </select>
 
+    <select id="findById" resultType="com.example.rental.entity.Car">
+        SELECT
+            car_id,
+            car_name,
+            number_plate,
+            status,
+            created_at,
+            updated_at
+        FROM car
+        WHERE car_id = #{carId}
+    </select>
+
 </mapper>

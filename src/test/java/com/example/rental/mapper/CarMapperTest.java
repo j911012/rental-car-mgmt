@@ -150,4 +150,22 @@ class CarMapperTest {
 		assertThat(carMapper.countByNumberPlate("品川500あ1234", 9902)).isEqualTo(1);
 	}
 
+	@Test
+	void findById_存在するIDなら全項目をマッピングして返す() {
+		Car car = carMapper.findById(9901);
+
+		assertThat(car.getCarId()).isEqualTo(9901);
+		assertThat(car.getCarName()).isEqualTo("プリウス");
+		assertThat(car.getNumberPlate()).isEqualTo("品川500あ1234");
+		assertThat(car.getStatus()).isEqualTo(CarStatus.AVAILABLE);
+		assertThat(car.getCreatedAt()).isEqualTo(LocalDateTime.of(2026, 1, 1, 10, 0, 0));
+		assertThat(car.getUpdatedAt()).isEqualTo(LocalDateTime.of(2026, 1, 2, 11, 0, 0));
+	}
+
+	@Test
+	void findById_存在しないIDならnullを返す() {
+		Car car = carMapper.findById(9999);
+
+		assertThat(car).isNull();
+	}
 }
